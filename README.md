@@ -1,0 +1,2 @@
+# SolanaStoreDApp
+Solana上で動くオンラインストアDApp用のリポジトリになります。
