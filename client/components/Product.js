@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../styles/Product.module.css";
-import IPFSDownload from './IpfsDownload';
+import Buy from "./Buy";
 
 /**
  * Productコンポーネント
@@ -12,7 +12,7 @@ export default function Product({ product }) {
   return (
     <div className={styles.product_container}>
       <div >
-        <img className={styles.product_image}src={image_url} alt={name} />
+        <img className={styles.product_image} src={image_url} alt={name} />
       </div>
 
       <div className={styles.product_details}>
@@ -23,8 +23,8 @@ export default function Product({ product }) {
 
         <div className={styles.product_action}>
           <div className={styles.product_price}>{price} USDC</div>
-          {/* 以下の部分は後ほどAPIからハッシュを取得する処理に変更します。 */}
-          <IPFSDownload filename="anya" hash="QmcJPLeiXBwA17WASSXs5GPWJs1n1HEmEmrtcmDgWjApjm" cta="Download goods"/>
+          {/* idを引数にてBuyコンポーネントを呼び出す。 */}
+          <Buy itemID={id} />
         </div>
       </div>
     </div>
