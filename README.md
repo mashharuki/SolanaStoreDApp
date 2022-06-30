@@ -10,3 +10,8 @@ Solana上で動くオンラインストアDApp用のリポジトリになりま�
 
 ### ウォレットが接続されていないデフォルト画面
  <img src="./assets/anya.png">
+
+### 購入処理中のローディング画面
+ <img src="./assets/loading.png">
+
+ 

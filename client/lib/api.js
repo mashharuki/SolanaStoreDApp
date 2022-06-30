@@ -34,3 +34,20 @@ export const hasPurchased = async (publicKey, itemID) => {
     }
     return false;
 };
+
+/**
+ * 製品の情報を取得するメソッド
+ */
+export const fetchItem = async (itemID) => {
+    // fetchItem APIを呼び出して情報を取得する。
+    const response = await fetch("../api/fetchItem", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itemID }),
+    });
+
+    const item = await response.json();
+    return item;
+}

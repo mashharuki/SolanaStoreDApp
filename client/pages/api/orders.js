@@ -1,4 +1,4 @@
-import orders from "./orders.json";
+import orders from "./order.json";
 import { writeFile } from "fs/promises";
 
 /**

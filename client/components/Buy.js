@@ -4,7 +4,7 @@ import { findReference, FindReferenceError } from "@solana/pay";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { InfinitySpin } from "react-loader-spinner";
 import IPFSDownload from "./IpfsDownload";
-import { addOrder, hasPurchased } from '../lib/api';
+import { addOrder, hasPurchased, fetchItem  } from '../lib/api';
 
 /**
  * 支払いのステータスを管理する変数
@@ -25,6 +25,7 @@ export default function Buy({ itemID }) {
     // 注文を識別するために使用される公開鍵を設定する。
     const orderID = useMemo(() => Keypair.generate().publicKey, []);   
 
+    const [item, setItem] = useState(null); 
     const [status, setStatus] = useState(STATUS.Initial);
     const [loading, setLoading] = useState(false); // 上記全てのロード状態を設定します。
 
@@ -97,6 +98,20 @@ export default function Buy({ itemID }) {
                 clearInterval(interval);
             };
         }
+
+        /**
+         * 製品情報を取得するメソッド
+         */
+        async function getItem(itemID) {
+            // fetchItemメソッドを呼び出す。
+            const item = await fetchItem(itemID);
+            // ステート変数を更新する。
+            setItem(item);
+        }
+
+        if (status === STATUS.Paid) {
+            getItem(itemID);
+        }
     }, [status]);
 
     // 副作用フック
@@ -107,7 +122,9 @@ export default function Buy({ itemID }) {
             // 購入済みの場合は、状態を Paidにする。
             if (purchased) {
                 setStatus(STATUS.Paid);
-                console.log("Address has already purchased this item!");
+                // 相手も情報を取得する。
+                const item = await fetchItem(itemID);
+                setItem(item);
             }
         }
         checkPurchased();
@@ -127,9 +144,9 @@ export default function Buy({ itemID }) {
 
     return (
         <div>
-            {status === STATUS.Paid ? (
+            {item ? (
                 /* トランザクションの送金が完了した場合は、ファイル名とハッシュ値を指定してダウンロードリンクコンポーネントを呼び出す。 */
-                <IPFSDownload filename="anya" hash="QmcJPLeiXBwA17WASSXs5GPWJs1n1HEmEmrtcmDgWjApjm" cta="Download goods"/>
+                <IPFSDownload filename={item.filename} hash={item.hash}/>
             ) : (
                 <button disabled={loading} className="buy-button" onClick={processTransaction}>
                     Buy now →
