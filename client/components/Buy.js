@@ -4,6 +4,7 @@ import { findReference, FindReferenceError } from "@solana/pay";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { InfinitySpin } from "react-loader-spinner";
 import IPFSDownload from "./IpfsDownload";
+import { addOrder, hasPurchased } from '../lib/api';
 
 /**
  * 支払いのステータスを管理する変数
@@ -79,6 +80,7 @@ export default function Buy({ itemID }) {
                         clearInterval(interval);
                         setStatus(STATUS.Paid);
                         setLoading(false);
+                        addOrder(order); 
                         alert("Thank you for your purchase!");
                     }
                 } catch (e) {
@@ -96,6 +98,20 @@ export default function Buy({ itemID }) {
             };
         }
     }, [status]);
+
+    // 副作用フック
+    useEffect(() => {
+        // 購入済みかどうかチェックする。
+        async function checkPurchased() {
+            const purchased = await hasPurchased(publicKey, itemID);
+            // 購入済みの場合は、状態を Paidにする。
+            if (purchased) {
+                setStatus(STATUS.Paid);
+                console.log("Address has already purchased this item!");
+            }
+        }
+        checkPurchased();
+    }, [publicKey, itemID]);
 
     if (!publicKey) {
         return (
