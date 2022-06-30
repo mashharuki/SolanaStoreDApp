@@ -3,6 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import Product from "../components/Product";
+import CreateProduct from "../components/CreateProduct";
 
 const TWITTER_HANDLE = "HARUKI05758694";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
@@ -13,8 +14,11 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const App = () => {  
   // サポートしているウォレットからユーザーのウォレットアドレスを取得します。
   const { publicKey } = useWallet();
+  // ownerであるか確認する。
+  const isOwner = ( publicKey ? publicKey.toString() === process.env.NEXT_PUBLIC_OWNER_PUBLIC_KEY : false );
   // ステート変数
   const [products, setProducts] = useState([]);
+  const [creating, setCreating] = useState(false);
 
   /**
    * ウォレットが接続されていない時に描画するコンポーネント
@@ -58,11 +62,18 @@ const App = () => {
       <div className="container">
         {/* ヘッダー */}
         <header className="header-container">
-          <p className="header"> 😳 UNCHAIN Image Store 😈</p>
+          <p className="header"> ✨ My Solana Image Store ✨</p>
           <p className="sub-text">The only Image store that accepts shitcoins</p>
+          {/* ownerであるときのみ描画 */}
+          {isOwner && (
+            <button className="create-product-button" onClick={() => setCreating(!creating)}>
+              {creating ? "Close" : "Create Product"}
+            </button>
+          )}
         </header>
         {/* メイン */}
         <main>
+          {creating && <CreateProduct />}
           {publicKey ? renderItemBuyContainer() : renderNotConnectedContainer()}
         </main>
         {/* フッター */}

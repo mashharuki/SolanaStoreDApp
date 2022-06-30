@@ -30,7 +30,7 @@ async function post(req, res) {
     // このアドレスが対象の商品を購入していない場合は、orders.jsonに注文を追加します。
     if (!orders.find((order) => order.buyer === newOrder.buyer.toString() && order.itemID === newOrder.itemID)) {
       orders.push(newOrder);
-      await writeFile("./orders.json", JSON.stringify(orders, null, 2));
+      await writeFile("./pages/api/order.json", JSON.stringify(orders, null, 2));
       res.status(200).json(orders);
     } else {
       res.status(400).send("Order already exists");
